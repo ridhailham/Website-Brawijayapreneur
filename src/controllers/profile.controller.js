@@ -6,7 +6,6 @@ exports.profile = (req, res) => {
         res.status(200).json({
             id: user.id,
             name: user.name,
-            phone: user.phone,
             email: user.email
         })
     }).catch((err) => {

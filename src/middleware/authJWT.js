@@ -1,25 +1,22 @@
-const jwt = require('jsonwebtoken')
-const config = require('../config/auth')
+const jwt = require('jsonwebtoken');
+const config = require('../config/auth');
 
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token;
 
-verifyToken = (req, res, next) => {
-    let token = req.headers['authorization']
+  if (!token) {
+    return res.redirect('/');
+  }
 
-    if(!token) {
-        return res.status(403).json({
-            massage: 'tidak ada token yang tersedia'
-        })
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      console.log(err.message);
+      return res.json(err);
     }
 
-    jwt.verify(token, config.secret, (err, decoded) => {
-        if(err) {
-            return res.status(401).json({
-                massage: 'unauthorized'
-            })
-        }
-        req.userId = decoded.id
-        next()
-    })
-}
+    req.user = decoded;
+    next();
+  });
+};
 
-module.exports = { verifyToken }
+module.exports = { verifyToken };

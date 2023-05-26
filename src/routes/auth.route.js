@@ -24,7 +24,8 @@
 
 
 
-const middleware = require('../middleware/index')
+const middlewareI = require('../middleware/index')
+const middlewareVerif = require('../middleware/authJWT')
 const controller = require('../controllers/auth.controller')
 
 module.exports = (app) => {
@@ -41,8 +42,12 @@ module.exports = (app) => {
 
     app.use(cors())
 
-    app.post('/api/auth/register', middleware.isUserExist, controller.register)
+    app.post('/api/auth/register', middlewareI.isUserExist, controller.register)
     app.post('/api/auth/login', controller.login)
+    app.get('/api/auth/verify', middlewareVerif.verifyToken, (req, res) => {
+        res.json({
+            data: req.user
+        })
+    })
 
-    
 }
